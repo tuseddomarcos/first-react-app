@@ -1,10 +1,11 @@
-import React, { Component,useState }from 'react'
+import React, { Component }from 'react'
 
 import axios from 'axios';
 
 import Buscador from './components/Buscador';
 import ListImages from './components/ListImages';
 import Loading from './components/Loading';
+import AlertWarning from './components/AlertWarning';
 
 
 class App extends Component {
@@ -18,6 +19,7 @@ class App extends Component {
     pagina: '',
     isLoading: false,
     msgWarning: '',
+    showDialog: true
   }
 
 
@@ -45,12 +47,7 @@ class App extends Component {
     const url = "https://pixabay.com/api/?key=19446160-514384b97dc5c7375ba5597d0&q=" + this.state.dataSerach + "&per_page=25&page=" + this.state.pagina;
     axios.get(url).then(response => {
       if(response.data.hits.length === 0){
-        if(this.state.pagina > 1){
-          alert("No se encontraron mas registros");
-        }else{
-          alert("No se encontraron registros");
-        }
-        this.setState({ images: []});
+        this.showDialog();
       } else{
         this.setState({ images: response.data.hits});
       }
@@ -58,6 +55,17 @@ class App extends Component {
     });
 
   }
+
+  showDialog = () => {
+    this.setState({ showDialog: true, images:[] });
+    this.dialog();
+  };
+  dialog = () =>{
+   return( <AlertWarning show={this.state.showDialog} handleClose={this.hideDialog} children={"No se encontraron registros"}/>);
+  }
+  hideDialog = () => {
+    this.setState({ showDialog: false });
+  };
 
   searchData = (dataSerach) => {
     this.setState({
@@ -82,10 +90,12 @@ class App extends Component {
             nextPage={this.nextPage}
             previousPage={this.previousPage}
           />
-          
         </div>
         <div justify-content-center>
           {this.state.isLoading && <Loading />}
+        </div>
+        <div>
+         
         </div>
       </div>
     );
