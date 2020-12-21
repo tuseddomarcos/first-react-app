@@ -23,7 +23,7 @@ class App extends Component {
   }
 
 
-  previousPage = () => {
+  previousPage = () => {//Voy una pagina para atras
     let pagina = this.state.pagina
 
     if (pagina === 1) return null;
